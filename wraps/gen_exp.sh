@@ -1,10 +1,10 @@
 #!/bin/bash
 
 il=$1
-base=$2
+wrd_emb=$2
 clt_opt=$3
 
-outfile="$il".$base.$clt_opt.sh
+outfile="$il".$wrd_emb.$clt_opt.sh
 
 echo "#!/bin/bash" > $outfile
 echo "#SBATCH --ntasks=60" >> $outfile
@@ -18,14 +18,17 @@ echo "source /home/rcf-40/rac_815/.bash_profile" >> $outfile
 echo "" >> $outfile
 
 echo "il=$il" >> $outfile
-echo "base=$base" >> $outfile
+echo "wrd_emb=$wrd_emb" >> $outfile
+echo "clt_opt=$clt_opt" >> $outfile
 echo "" >> $outfile
 
-cat ../config/tmp.$base.cfg | \
-sed "s/il-id/$il/" | sed "s/exp-dir/$base-$il/" |
+
+cat ../config/tmp.baseline.cfg | \
+sed "s/il-id/$il/" | \
+sed "s/exp-dir/$il-$wrd_emb-$clt_opt/" |
 sed "s/clt-opt/$clt_opt/" \
-> ../config/$il.$base.$clt_opt.cfg
+> ../config/$il.$wrd_emb.$clt_opt.cfg
 
 
-echo 'python network.py --config_file config/$base.$il.cfg > saves/$base-$il/train.log' >> $outfile
+echo 'python network.py --config_file config/$il.$wrd_emb.$clt_opt.cfg > saves/$il-$wrd_emb-$clt_opt/train.log' >> $outfile
 
