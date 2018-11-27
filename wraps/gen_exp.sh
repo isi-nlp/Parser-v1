@@ -17,20 +17,19 @@ echo "cd /home/rcf-40/rac_815/dep-par-biaffine/" >> $outfile
 echo "source /home/rcf-40/rac_815/.bash_profile" >> $outfile
 echo "" >> $outfile
 
-echo "il=$il" >> $outfile
-echo "wrd_emb=$wrd_emb" >> $outfile
-echo "clt_opt=$clt_opt" >> $outfile
+exp_id="$il-$wrd_emb-$clt_opt"
+
+echo "exp_id=$exp_id" >> $outfile
 echo "" >> $outfile
 
-exp_dir=saves/$il-$wrd_emb-$clt_opt
 
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
-sed "s/exp-dir/$exp_dir/" |
+sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" \
-> ../config/$il.$wrd_emb.$clt_opt.cfg
+> ../config/$exp_id.cfg
 
-mkdir -p exp_dir
+mkdir -p ../saves/$exp_id
 
-echo 'python network.py --config_file config/$il.$wrd_emb.$clt_opt.cfg > saves/$exp_dir/train.log' >> $outfile
+echo 'python network.py --config_file config/$exp_id.cfg > saves/$exp_id/train.log' >> $outfile
 

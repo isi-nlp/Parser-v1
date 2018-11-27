@@ -8,8 +8,6 @@
 cd /home/rcf-40/rac_815/dep-par-biaffine/
 source /home/rcf-40/rac_815/.bash_profile
 
-il=sv
-wrd_emb=guo
-clt_opt=id
+exp_id=sv-guo-id
 
-python network.py --config_file config/$il.$wrd_emb.$clt_opt.cfg > saves/$il-$wrd_emb-$clt_opt/train.log
+python network.py --config_file config/$exp_id.cfg > saves/$exp_id/train.log
