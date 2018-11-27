@@ -22,13 +22,15 @@ echo "wrd_emb=$wrd_emb" >> $outfile
 echo "clt_opt=$clt_opt" >> $outfile
 echo "" >> $outfile
 
+exp_dir=saves/$il-$wrd_emb-$clt_opt
 
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
-sed "s/exp-dir/$il-$wrd_emb-$clt_opt/" |
+sed "s/exp-dir/$exp_dir/" |
 sed "s/clt-opt/$clt_opt/" \
 > ../config/$il.$wrd_emb.$clt_opt.cfg
 
+mkdir -p exp_dir
 
-echo 'python network.py --config_file config/$il.$wrd_emb.$clt_opt.cfg > saves/$il-$wrd_emb-$clt_opt/train.log' >> $outfile
+echo 'python network.py --config_file config/$il.$wrd_emb.$clt_opt.cfg > saves/$exp_dir/train.log' >> $outfile
 
