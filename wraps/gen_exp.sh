@@ -26,6 +26,7 @@ echo "" >> $outfile
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
+sed "s/wrd-emb-opt/$wrd_emb/" | \
 sed "s/clt-opt/$clt_opt/" \
 > ../config/$exp_id.cfg
 
