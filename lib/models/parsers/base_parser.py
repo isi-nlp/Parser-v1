@@ -51,12 +51,11 @@ class BaseParser(NN):
           word = vocabs[0][token[0]]
           glove = vocabs[0].get_embed(token[1])
           tag = vocabs[1][token[2]]
-          gold_tag = vocabs[1][gold[0]]
           pred_parse = parse
           pred_rel = vocabs[2][rel]
-          gold_parse = gold[1]
-          gold_rel = vocabs[2][gold[2]]
-          fileobject.write('%d\t%s\t%s\t%s\t%s\t_\t%d\t%s\t%d\t%s\n' % (l, word, glove, tag, gold_tag, pred_parse, pred_rel, gold_parse, gold_rel))
+          gold_parse = gold[0]
+          gold_rel = vocabs[2][gold[1]]
+          fileobject.write('%d\t%s\t%s\t%s\t_\t%d\t%s\t%d\t%s\n' % (l, word, glove, tag, pred_parse, pred_rel, gold_parse, gold_rel))
       fileobject.write('\n')
     return
   
@@ -74,11 +73,13 @@ class BaseParser(NN):
       sent = -np.ones( (length, 9), dtype=int)
       tokens = np.arange(1, length+1)
       sent[:,0] = tokens
-      sent[:,1:4] = inputs[tokens]
-      sent[:,4] = targets[tokens,0]
+      sent[:,1:4] = inputs[tokens,:3]
+    
       sent[:,5] = parse_preds[tokens]
       sent[:,6] = rel_preds[tokens]
-      sent[:,7:] = targets[tokens, 1:]
+      
+      # sent[:,4] = targets[tokens,0]
+      sent[:,7:] = targets[tokens]
       sents.append(sent)
     return sents
   
@@ -104,7 +105,8 @@ class BaseParser(NN):
   #=============================================================
   @property
   def input_idxs(self):
-    return (0, 1, 2)
+    return (0, 1, 2, 3, 4)
+    # prev: wrd,tg1,tg2; now: wrd, wrd_emb, tg, clt, clt_emb
   @property
   def target_idxs(self):
-    return (3, 4, 5)
+    return (-2, -1)

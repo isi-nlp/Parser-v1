@@ -21,6 +21,7 @@ from __future__ import print_function
 
 import os
 import sys
+import pdb
 import time
 import pickle as pkl
 
@@ -59,14 +60,18 @@ class Network(Configurable):
     self._model = model(self._config, global_step=self.global_step)
     
     self._vocabs = []
-    vocab_files = [(self.word_file, 1, 'Words'),
-                   (self.tag_file, [3, 4], 'Tags'),
-                   (self.rel_file, 7, 'Rels')]
-    for i, (vocab_file, index, name) in enumerate(vocab_files):
+    vocab_files = [(self.word_file, 1, 'Words',True),
+                   (self.tag_file , 3, 'Tags',False),
+                   (self.rel_file , 7, 'Rels',False),
+                   (self.clt_file , 9, 'Clusters',self.clt_src=="emb")]
+                   # tags prev: [3,4]
+
+
+    for i, (vocab_file, index, name,use_ptr) in enumerate(vocab_files):
       vocab = Vocab(vocab_file, index, self._config,
                     name=name,
                     cased=self.cased if not i else True,
-                    use_pretrained=(not i),
+                    use_pretrained=use_ptr,
                     global_step=self.global_step)
       self._vocabs.append(vocab)
     
@@ -250,13 +255,12 @@ class Network(Configurable):
             i+1,
             word,
             self.tags[pred[3]] if pred[3] != -1 else self.tags[datum[2]],
-            self.tags[pred[4]] if pred[4] != -1 else self.tags[datum[3]],
-            str(pred[5]) if pred[5] != -1 else str(datum[4]),
-            self.rels[pred[6]] if pred[6] != -1 else self.rels[datum[5]],
+            str(pred[5]) if pred[5] != -1 else str(datum[-2]),
+            self.rels[pred[6]] if pred[6] != -1 else self.rels[datum[-1]],
             str(pred[7]) if pred[7] != -1 else '_',
             self.rels[pred[8]] if pred[8] != -1 else '_',
           )
-          f.write('%s\t%s\t_\t%s\t%s\t_\t%s\t%s\t%s\t%s\n' % tup)
+          f.write('%s\t%s\t_\t%s\t_\t_\t%s\t%s\t%s\t%s\n' % tup)
         f.write('\n')
     with open(os.path.join(self.save_dir, 'scores.txt'), 'a') as f:
       s, _ = self.model.evaluate(os.path.join(self.save_dir, os.path.basename(filename)), punct=self.model.PUNCT)

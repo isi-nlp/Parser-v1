@@ -94,6 +94,10 @@ class Configurable(object):
     return self._config.get('OS', 'rel_file')
   argparser.add_argument('--rel_file')
   @property
+  def clt_file(self):
+    return self._config.get('OS', 'clt_file')
+  argparser.add_argument('--clt_file')
+  @property
   def embed_file(self):
     return self._config.get('OS', 'embed_file')
   argparser.add_argument('--embed_file')
@@ -101,6 +105,14 @@ class Configurable(object):
   def embed_aux_file(self):
     return self._config.get('OS', 'embed_aux_file')
   argparser.add_argument('--embed_aux_file')
+  @property
+  def embed_clt_file(self):
+    return self._config.get('OS', 'embed_clt_file')
+  argparser.add_argument('--embed_clt_file')
+  @property
+  def clt_src(self):
+    return self._config.get('OS', 'clt_src')
+  argparser.add_argument('--clt_src') # [id,emb]
   @property
   def train_file(self):
     return self._config.get('OS', 'train_file')
@@ -250,6 +262,10 @@ class Configurable(object):
   def word_keep_prob(self):
     return self._config.getfloat('Dropout', 'word_keep_prob')
   argparser.add_argument('--word_keep_prob')
+  @property
+  def clt_keep_prob(self):
+    return self._config.getfloat('Dropout', 'clt_keep_prob')
+  argparser.add_argument('--clt_keep_prob')
   @property
   def tag_keep_prob(self):
     return self._config.getfloat('Dropout', 'tag_keep_prob')

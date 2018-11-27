@@ -26,6 +26,8 @@ from configurable import Configurable
 from lib.linalg import linear
 from lib.models.nn import NN
 
+import pdb
+
 #***************************************************************
 class Bucket(Configurable):
   """"""
@@ -80,7 +82,7 @@ class Bucket(Configurable):
       data = np.zeros(shape, dtype=np.int32)
       for i, datum in enumerate(self._data):
         datum = np.array(datum)
-        data[i, 0:len(datum)] = datum
+        data[i, 0:len(datum),:] = datum
       self._data = data
       self._sents = np.array(self._sents)
     else:

@@ -21,6 +21,7 @@ from __future__ import print_function
 
 import os
 import sys
+import pdb
 from collections import Counter
 
 import numpy as np
@@ -54,6 +55,8 @@ class Vocab(Configurable):
       self.SPECIAL_TOKENS = ('PAD', 'ROOT', 'UNK')
     elif self.name == 'Rels':
       self.SPECIAL_TOKENS = ('pad', self.root_label, 'unk')
+    elif self.name == 'Clusters':
+      self.SPECIAL_TOKENS = ('C.PAD', 'C.ROOT', 'C.UNK')
     
     self._counts = Counter()
     self._str2idx = {}
@@ -156,12 +159,15 @@ class Vocab(Configurable):
     
     self._str2embed = self.init_str2idx()
     self._embed2str = self.init_idx2str()
+    embed_file = self.embed_file if self.name!='Clusters' \
+                                  else self.embed_clt_file
+
     embeds = []
-    with open(self.embed_file) as f:
+    with open(embed_file) as f:
       cur_idx = Vocab.START_IDX
       for line_num, line in enumerate(f):
         line = line.strip().split()
-        if line:
+        if len(line)>2:
           try:
             self._str2embed[line[0]] = cur_idx
             self._embed2str[cur_idx] = line[0]
@@ -233,7 +239,7 @@ class Vocab(Configurable):
         self.trainable_embeddings = tf.get_variable('Trainable', shape=(len(self._str2idx), embed_size), initializer=initializer)
         if self.use_pretrained:
           self.pretrained_embeddings /= np.std(self.pretrained_embeddings)
-          self.pretrained_embeddings = tf.Variable(self.pretrained_embeddings, trainable=False, name='Pretrained')
+          self.pretrained_embeddings = tf.Variable(self.pretrained_embeddings, trainable=False, name='Pretrained_'+self.name)
     return
   
   #=============================================================
@@ -247,7 +253,7 @@ class Vocab(Configurable):
     
     embed_input = tf.nn.embedding_lookup(trainable_embeddings, inputs)
     if moving_params is None:
-      tf.add_to_collection('Weights', embed_input)
+      tf.add_to_collection('Weights_'+self.name, embed_input)
     if self.use_pretrained and pret_inputs is not None:
       return embed_input, tf.nn.embedding_lookup(self.pretrained_embeddings, pret_inputs)
     else:
@@ -272,7 +278,7 @@ class Vocab(Configurable):
     embed_input = tf.reshape(embed_input, tf.pack([batch_size, bucket_size, self.embed_size]))
     embed_input.set_shape([tf.Dimension(None), tf.Dimension(None), tf.Dimension(self.embed_size)]) 
     if moving_params is None:
-      tf.add_to_collection('Weights', embed_input)
+      tf.add_to_collection('Weights_'+self.name, embed_input)
     return embed_input
   
   #=============================================================

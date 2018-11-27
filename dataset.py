@@ -22,6 +22,7 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 from collections import Counter
+import pdb
 
 from lib.etc.k_means import KMeans
 from configurable import Configurable
@@ -44,7 +45,7 @@ class Dataset(Configurable):
     self.vocabs = vocabs
     self.rebucket()
     
-    self.inputs = tf.placeholder(dtype=tf.int32, shape=(None,None,None), name='inputs')
+    self.inputs = tf.placeholder(dtype=tf.int32, shape=(None,None,None), name='inputs') # added tr_clt,pretr_clt
     self.targets = tf.placeholder(dtype=tf.int32, shape=(None,None,None), name='targets')
     self.builder = builder()
   
@@ -97,12 +98,19 @@ class Dataset(Configurable):
   def _process_buff(self, buff):
     """"""
     
-    words, tags, rels = self.vocabs
+    words, tags, rels, clts = self.vocabs
+    wpt = 2 if words.use_pretrained else 1
+    cpt = 2 if clts.use_pretrained else 1
     for i, sent in enumerate(buff):
       for j, token in enumerate(sent):
-        word, tag1, tag2, head, rel = token[words.conll_idx], token[tags.conll_idx[0]], token[tags.conll_idx[1]], token[6], token[rels.conll_idx]
-        buff[i][j] = (word,) + words[word] + tags[tag1] + tags[tag2] + (int(head),) + rels[rel]
-      sent.insert(0, ('root', Vocab.ROOT, Vocab.ROOT, Vocab.ROOT, Vocab.ROOT, 0, Vocab.ROOT))
+        word, tag, head, rel, clt = token[words.conll_idx], \
+                                    token[tags.conll_idx], \
+                                    token[6], \
+                                    token[rels.conll_idx], \
+                                    token[clts.conll_idx]
+        buff[i][j] = (word,) + words[word] + tags[tag] + clts[clt] + (int(head),) + rels[rel]
+        # if use_pretrained, words[] returns trainable_id, pretr_id
+      sent.insert(0, ['root'] + [Vocab.ROOT]*(wpt+1+cpt)+ [0, Vocab.ROOT])
     return buff
   
   #=============================================================
@@ -166,6 +174,7 @@ class Dataset(Configurable):
         self.inputs: data[:,:maxlen,input_idxs],
         self.targets: data[:,:maxlen,target_idxs]
       })
+
       yield feed_dict, sents
   
   #=============================================================

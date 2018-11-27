@@ -55,11 +55,12 @@ class NN(Configurable):
     return
   
   #=============================================================
-  def embed_concat(self, word_inputs, tag_inputs=None, rel_inputs=None):
+  def embed_concat(self, word_inputs, clt_inputs=None, tag_inputs=None, rel_inputs=None):
     """"""
     
     if self.moving_params is None:
       word_keep_prob = self.word_keep_prob
+      clt_keep_prob = self.clt_keep_prob
       tag_keep_prob = self.tag_keep_prob
       rel_keep_prob = self.rel_keep_prob
       noise_shape = tf.pack([tf.shape(word_inputs)[0], tf.shape(word_inputs)[1], 1])
@@ -68,6 +69,10 @@ class NN(Configurable):
         word_mask = tf.nn.dropout(tf.ones(noise_shape), word_keep_prob)*word_keep_prob
       else:
         word_mask = 1
+      if clt_inputs is not None and clt_keep_prob < 1:
+        clt_mask = tf.nn.dropout(tf.ones(noise_shape), clt_keep_prob)*clt_keep_prob
+      else:
+        clt_mask = 1
       if tag_inputs is not None and tag_keep_prob < 1:
         tag_mask = tf.nn.dropout(tf.ones(noise_shape), tag_keep_prob)*tag_keep_prob
       else:
@@ -78,27 +83,34 @@ class NN(Configurable):
         rel_mask = 1
       
       word_embed_size = word_inputs.get_shape().as_list()[-1]
+      clt_embed_size = 0 if clt_inputs is None else clt_inputs.get_shape().as_list()[-1]
       tag_embed_size = 0 if tag_inputs is None else tag_inputs.get_shape().as_list()[-1]
       rel_embed_size = 0 if rel_inputs is None else rel_inputs.get_shape().as_list()[-1]
-      total_size = word_embed_size + tag_embed_size + rel_embed_size
+      total_size = word_embed_size + clt_embed_size + tag_embed_size + rel_embed_size
       if word_embed_size == tag_embed_size:
         total_size += word_embed_size
-      dropped_sizes = word_mask * word_embed_size + tag_mask * tag_embed_size + rel_mask * rel_embed_size
+      dropped_sizes = word_mask * word_embed_size + \
+                      clt_mask * clt_embed_size + \
+                      tag_mask * tag_embed_size + \
+                      rel_mask * rel_embed_size
       if word_embed_size == tag_embed_size:
-        dropped_sizes += word_mask * tag_mask * word_embed_size
+        dropped_sizes += word_mask * clt_mask * tag_mask * word_embed_size
       scale_factor = total_size / (dropped_sizes + self.epsilon)
       
       word_inputs *= word_mask * scale_factor
+      if clt_inputs is not None:
+        clt_inputs *= clt_mask * scale_factor
       if tag_inputs is not None:
         tag_inputs *= tag_mask * scale_factor
       if rel_inputs is not None:
         rel_inputs *= rel_mask * scale_factor
     else:
       word_embed_size = word_inputs.get_shape().as_list()[-1]
+      clt_embed_size = 0 if clt_inputs is None else clt_inputs.get_shape().as_list()[-1]
       tag_embed_size = 0 if tag_inputs is None else tag_inputs.get_shape().as_list()[-1]
       rel_embed_size = 0 if rel_inputs is None else rel_inputs.get_shape().as_list()[-1]
     
-    return tf.concat(2, filter(lambda x: x is not None, [word_inputs, tag_inputs, rel_inputs]))
+    return tf.concat(2, filter(lambda x: x is not None, [word_inputs, clt_inputs, tag_inputs, rel_inputs]))
   
   #=============================================================
   def RNN(self, inputs):
