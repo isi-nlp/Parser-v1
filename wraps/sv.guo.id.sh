@@ -1,7 +1,8 @@
 #!/bin/bash
-#SBATCH --ntasks=60
+#SBATCH --ntasks=80
 #SBATCH --mem=40GB
 #SBATCH --mem-per-cpu=2GB
+#SBATCH --gres=gpu:p100:1
 #SBATCH --time=150:00:00
 #SBATCH --partition=isi
 

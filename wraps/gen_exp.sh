@@ -7,9 +7,10 @@ clt_opt=$3
 outfile="$il".$wrd_emb.$clt_opt.sh
 
 echo "#!/bin/bash" > $outfile
-echo "#SBATCH --ntasks=60" >> $outfile
+echo "#SBATCH --ntasks=80" >> $outfile
 echo "#SBATCH --mem=40GB" >> $outfile
 echo "#SBATCH --mem-per-cpu=2GB" >> $outfile
+echo "#SBATCH --gres=gpu:p100:1" >> $outfile
 echo "#SBATCH --time=150:00:00" >> $outfile
 echo "#SBATCH --partition=isi" >> $outfile
 echo "" >> $outfile
@@ -26,7 +27,7 @@ echo "" >> $outfile
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
-sed "s/wrd-emb-opt/$wrd_emb/" | \
+sed "s/wrd-emb-file/$wrd_emb.vec/" | \
 sed "s/clt-opt/$clt_opt/" \
 > ../config/$exp_id.cfg
 
