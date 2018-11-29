@@ -1,5 +1,7 @@
 saves/*
 data/*
+guo-emb/*
+wrd-emb/*
 config/base.*.cfg
 *.pyc
 

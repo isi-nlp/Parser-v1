@@ -7,7 +7,7 @@ clt_opt=$3
 outfile="$il".$wrd_emb.$clt_opt.sh
 
 echo "#!/bin/bash" > $outfile
-echo "#SBATCH --ntasks=80" >> $outfile
+echo "#SBATCH --ntasks=20" >> $outfile
 echo "#SBATCH --mem=40GB" >> $outfile
 echo "#SBATCH --mem-per-cpu=2GB" >> $outfile
 echo "#SBATCH --gres=gpu:p100:1" >> $outfile
