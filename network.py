@@ -68,6 +68,7 @@ class Network(Configurable):
 
 
     for i, (vocab_file, index, name,use_ptr) in enumerate(vocab_files):
+      print("vocab ",i)
       vocab = Vocab(vocab_file, index, self._config,
                     name=name,
                     cased=self.cased if not i else True,
@@ -75,8 +76,11 @@ class Network(Configurable):
                     global_step=self.global_step)
       self._vocabs.append(vocab)
     
+    print("train data..")
     self._trainset = Dataset(self.train_file, self._vocabs, model, self._config, name='Trainset')
+    print("val data..")
     self._validset = Dataset(self.valid_file, self._vocabs, model, self._config, name='Validset')
+    print("test data..")
     self._testset = Dataset(self.test_file, self._vocabs, model, self._config, name='Testset')
     
     self._ops = self._gen_ops()

@@ -20,6 +20,7 @@ from __future__ import division
 from __future__ import print_function
 
 from collections import Counter
+import pdb
 
 import numpy as np
 
@@ -45,18 +46,36 @@ class KMeans(object):
     self._split_cntr = Counter()
     
     # Initialize the splits evenly
+    # print("> init splits")
     lengths = []
     for length, count in self._len_cntr.items():
       lengths.extend([length]*count)
+    # print("> sort splits")
     lengths.sort()
     self._splits = [np.max(split) for split in np.array_split(lengths, self._k)]
     
+    # print("> splt 1")
+    # pdb.set_trace()
+
     i = len(self._splits)-1
     while i > 0:
-      while self._splits[i-1] >= self._splits[i] or self._splits[i-1] not in self._len_cntr:
+      prev = self._splits[i-1]
+      while all([ self._splits[i-1] >= self._splits[i] or self._splits[i-1] not in self._len_cntr,
+                  self._splits[i-1] >= 0
+                  ]):
         self._splits[i-1] -= 1
       i -= 1
+
+      if self._splits[i] < 0:
+        raise ValueError('Too many buckets! a maximum of ' + str(len(self._splits[i+1:])) + " needed" )
+        break
+    #
+    if self._splits[i] < 0:
+      self._splits = self._splits[i+1:]
+      self._k = len(self._splits)
+
     
+    # print("> splt 2")
     i = 1
     while i < len(self._splits)-1:
       while self._splits[i] <= self._splits[i-1] or self._splits[i] not in self._len_cntr:
@@ -80,13 +99,13 @@ class KMeans(object):
     
     # Iterate
     old_splits = None
-    #print('0) Initial splits: %s; Initial mass: %d' % (self._splits, self.get_mass()))
+    # print('0) Initial splits: %s; Initial mass: %d' % (self._splits, self.get_mass()))
     i = 0
     while self._splits != old_splits:
       old_splits = list(self._splits)
       self.recenter()
       i += 1
-    #print('%d) Final splits: %s; Final mass: %d' % (i, self._splits, self.get_mass()))
+    # print('%d) Final splits: %s; Final mass: %d' % (i, self._splits, self.get_mass()))
     
     self.reindex()
     return

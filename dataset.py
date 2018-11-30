@@ -114,25 +114,35 @@ class Dataset(Configurable):
     return buff
   
   #=============================================================
-  def reset(self, sizes):
+  def reset(self, KM_obj):
     """"""
     
     self._data = []
     self._targets = []
-    self._metabucket.reset(sizes)
+    self._metabucket._n_bkts = KM_obj._k
+    self._metabucket.reset(KM_obj.splits)
     return
   
   #=============================================================
   def rebucket(self):
     """"""
+
+    print("rebucketing...")
     
     buff = self._file_iterator.next()
     len_cntr = Counter()
     
     for sent in buff:
       len_cntr[len(sent)] += 1
-    self.reset(KMeans(self.n_bkts, len_cntr).splits)
+
+    print("init kmeans...")
+    print("len cntr: ", len(len_cntr) )
+    # pdb.set_trace()
+
+    self.reset(KMeans(self.n_bkts, len_cntr))
     
+    print("post kmeans..")
+
     for sent in buff:
       self._metabucket.add(sent)
     self._finalize()
