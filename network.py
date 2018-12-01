@@ -411,6 +411,7 @@ if __name__ == '__main__':
       #  pkl.dump(sess.run(tf.get_variable('Weights')), open('mat3.pkl', 'w'))
       network.savefigs(sess)
     else:
+      print("Testing...")
       os.system('echo Testing: >> %s/HEAD' % network.save_dir)
       os.system('git rev-parse HEAD >> %s/HEAD' % network.save_dir)
       saver = tf.train.Saver(var_list=network.save_vars)
