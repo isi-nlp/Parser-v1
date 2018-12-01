@@ -23,15 +23,27 @@ exp_id="$il-$wrd_emb-$clt_opt"
 echo "exp_id=$exp_id" >> $outfile
 echo "" >> $outfile
 
-
+# malopa original
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/wrd-emb-file/$wrd_emb.vec/" | \
-sed "s/clt-opt/$clt_opt/" \
+sed "s/clt-opt/$clt_opt/" | \
+sed "s/test-file/test.lc.lid/" \
 > ../config/$exp_id.cfg
+
+# malopa - cipher
+cat ../config/tmp.baseline.cfg | \
+sed "s/il-id/$il/" | \
+sed "s/exp-dir/$exp_id/" | \
+sed "s/wrd-emb-file/$wrd_emb.vec/" | \
+sed "s/clt-opt/$clt_opt/" | \
+sed "s/test-file/test.conllu.cipher/" \
+> ../config/$exp_id.cipher.cfg
+
 
 mkdir -p ../saves/$exp_id
 
 echo 'python network.py --config_file config/$exp_id.cfg > saves/$exp_id/train.log' >> $outfile
 
+test.lc.lid
