@@ -100,7 +100,6 @@ class Dataset(Configurable):
     
     words, tags, rels, clts = self.vocabs
     wpt = 2 if words.use_pretrained else 1
-    cpt = 2 if clts.use_pretrained else 1
     zero_we = self.zero_wrd_emb and self._name != "Trainset"
     wunk_pack = (words.UNK,words.UNK) if words.use_pretrained else (words.UNK,)
 
@@ -112,9 +111,16 @@ class Dataset(Configurable):
                                     token[rels.conll_idx], \
                                     token[clts.conll_idx]
         wid = words[word] if not zero_we else wunk_pack
-        buff[i][j] = (word,) + wid + tags[tag] + clts[clt] + (int(head),) + rels[rel]
+        cid = ''
+        if self.clt_src=="id":
+          cid = clts[clt]
+        else:
+          cid = clts[clts.get_clt_map(word)] # emb_id of multi-ling clust id
+        
+        buff[i][j] = (word,) + wid + tags[tag] + cid + (int(head),) + rels[rel]
+
         # if use_pretrained, words[] returns trainable_id, pretr_id
-      sent.insert(0, ['root'] + [Vocab.ROOT]*(wpt+1+cpt)+ [0, Vocab.ROOT])
+      sent.insert(0, ['root'] + [Vocab.ROOT]*(wpt+1+1)+ [0, Vocab.ROOT])
 
       # if self._name != "Trainset":
       #   pdb.set_trace()
@@ -187,6 +193,9 @@ class Dataset(Configurable):
       data = self[bkt_idx].data[bkt_mb]
       sents = self[bkt_idx].sents[bkt_mb]
       maxlen = np.max(np.sum(np.greater(data[:,:,0], 0), axis=1))
+      
+      # pdb.set_trace()
+
       feed_dict.update({
         self.inputs: data[:,:maxlen,input_idxs],
         self.targets: data[:,:maxlen,target_idxs]

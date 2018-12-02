@@ -105,8 +105,8 @@ class BaseParser(NN):
   #=============================================================
   @property
   def input_idxs(self):
-    return (0, 1, 2, 3, 4)
-    # prev: wrd,tg1,tg2; now: wrd, wrd_emb, tg, clt, clt_emb
+    return (0, 1, 2, 3)
+    # prev: wrd,tg1,tg2; now: wrd, wrd_emb, tg, clt/clt_emb
   @property
   def target_idxs(self):
     return (-2, -1)
