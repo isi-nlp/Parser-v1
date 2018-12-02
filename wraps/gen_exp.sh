@@ -5,7 +5,7 @@ clt_opt=$2
 zwe_opt=$3 # True,False
 
 use_we="guo"
-if [ $zwe_opt = "False" ]; then
+if [ $zwe_opt = "True" ]; then
 	use_we="unk"
 fi
 outfile="$il".$use_we.$clt_opt.sh
