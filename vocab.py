@@ -23,6 +23,7 @@ import os
 import sys
 import pdb
 from collections import Counter
+import cPickle as pickle
 
 import numpy as np
 import tensorflow as tf
@@ -30,6 +31,15 @@ import tensorflow as tf
 from configurable import Configurable
 
 #***************************************************************
+
+def uploadObject(obj_name):
+  # Load tagger
+  with open(obj_name, 'rb') as fd:
+    obj = pickle.load(fd)
+  return obj
+
+#***************************************************************
+
 class Vocab(Configurable):
   """"""
   
@@ -66,12 +76,19 @@ class Vocab(Configurable):
       self._str2embed = {}
       self._embed2str = {}
       self.pretrained_embeddings = None
+
+    add_vocab = True
+    if self.clt_src=="emb" and self.name == 'Clusters':
+      self._clt_mapper = uploadObject("data/joined.mapper.pickle")
+      add_vocab = False
+    ##
     
-    if os.path.isfile(self.vocab_file):
-      self.load_vocab_file()
-    else:
-      self.add_train_file()
-      self.save_vocab_file()
+    if add_vocab:
+      if os.path.isfile(self.vocab_file):
+        self.load_vocab_file()
+      else:
+        self.add_train_file()
+        self.save_vocab_file()
     if self.use_pretrained:
       self.load_embed_file()
     self._finalize()
@@ -175,8 +192,15 @@ class Vocab(Configurable):
             cur_idx += 1
           except:
             raise ValueError('The embedding file is misformatted at line %d' % (line_num+1))
+    #
+
+    if self.name=='Clusters' and self.clt_src=="emb":
+      self._str2idx = self._str2embed
+      self._idx2str = self._embed2str
+
     self.pretrained_embeddings = np.array(embeds, dtype=np.float32)
     self.pretrained_embeddings = np.pad(self.pretrained_embeddings, ((self.START_IDX, 0), (0, 0)), 'constant')
+
     if os.path.isfile(self.embed_aux_file):
       with open(self.embed_aux_file) as f:
         for line in f:
@@ -305,6 +329,15 @@ class Vocab(Configurable):
     return self._str2idx.values()
   def iteritems(self):
     return self._str2idx.iteritems()
+
+  def get_clt_map(self,key):
+    if key in self._clt_mapper:
+      return self._clt_mapper[key]
+    else:
+      try:
+        return self._clt_mapper["<unk>"+key[-3:]] # <unk>_<lid>
+      except:
+        return self._clt_mapper["unk"+key[-3:]] # <unk>_<lid>
   
   #=============================================================
   def __getitem__(self, key):
@@ -312,7 +345,10 @@ class Vocab(Configurable):
       if not self.cased:
         key = key.lower()
       if self.use_pretrained:
-        return (self._str2idx.get(key, self.UNK), self._str2embed.get(key, self.UNK))
+        if self.name!='Clusters':
+          return (self._str2idx.get(key, self.UNK), self._str2embed.get(key, self.UNK))
+        else:
+          return (self._str2embed.get(key, self.UNK),)
       else:
         return (self._str2idx.get(key, self.UNK),)
     elif isinstance(key, (int, long, np.int32, np.int64)):

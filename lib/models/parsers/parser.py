@@ -32,24 +32,14 @@ class Parser(BaseParser):
     word_inputs, pret_inputs = vocabs[0].embedding_lookup(inputs[:,:,0], inputs[:,:,1], moving_params=self.moving_params)
     tag_inputs = vocabs[1].embedding_lookup(inputs[:,:,2], moving_params=self.moving_params)
     
-    clt_inputs,pret_clt_input = '',''
-    if vocabs[3].use_pretrained:
-      clt_inputs,pret_clt_inputs = vocabs[3].embedding_lookup(inputs[:,:,3], inputs[:,:,4], moving_params=self.moving_params)
-    else:
-      clt_inputs = vocabs[3].embedding_lookup(inputs[:,:,3], moving_params=self.moving_params)
+    clt_inputs = vocabs[3].embedding_lookup(inputs[:,:,3], moving_params=self.moving_params)
 
     if self.add_to_pretrained:
       word_inputs += pret_inputs
-
-    if self.add_to_pretrained and vocabs[3].use_pretrained:
-      clt_inputs  += pret_clt_inputs
       
     if self.word_l2_reg > 0:
       unk_mask = tf.expand_dims(tf.to_float(tf.greater(inputs[:,:,1], vocabs[0].UNK)),2)
       word_loss = self.word_l2_reg*tf.nn.l2_loss((word_inputs - pret_inputs) * unk_mask)
-
-      unk_mask = tf.expand_dims(tf.to_float(tf.greater(inputs[:,:,4], vocabs[3].UNK)),2)
-      clt_loss = self.word_l2_reg*tf.nn.l2_loss((clt_inputs - pret_clt_inputs) * unk_mask)
     embed_inputs = self.embed_concat(word_inputs, clt_inputs, tag_inputs)
     
     top_recur = embed_inputs
@@ -86,7 +76,7 @@ class Parser(BaseParser):
     output['accuracy'] = output['n_correct'] / output['n_tokens']
     output['loss'] = arc_output['loss'] + rel_output['loss'] 
     if self.word_l2_reg > 0:
-      output['loss'] += word_loss + clt_loss
+      output['loss'] += word_loss
     
     output['embed'] = embed_inputs
     output['recur'] = top_recur

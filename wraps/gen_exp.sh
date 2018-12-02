@@ -4,8 +4,11 @@ il=$1
 clt_opt=$2
 zwe_opt=$3 # True,False
 
-wrd_emb="guo"
-outfile="$il".$wrd_emb.$clt_opt.sh
+use_we="guo"
+if [ $zwe_opt = "False" ]; then
+	use_we="unk"
+fi
+outfile="$il".$use_we.$clt_opt.sh
 
 echo "#!/bin/bash" > $outfile
 echo "#SBATCH --ntasks=40" >> $outfile
@@ -20,7 +23,7 @@ echo "source /home/rcf-40/rac_815/.bash_profile" >> $outfile
 echo "" >> $outfile
 
 
-exp_id="$il-$wrd_emb-$clt_opt"
+exp_id="$il-$use_we-$clt_opt"
 
 echo "exp_id=$exp_id" >> $outfile
 echo "" >> $outfile
@@ -31,7 +34,6 @@ test_orig="test.lc.lid"
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
-sed "s/wrd-emb-file/$wrd_emb.vec/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
 sed "s/test-file/$test_orig/" \
@@ -41,7 +43,6 @@ sed "s/test-file/$test_orig/" \
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
-sed "s/wrd-emb-file/$wrd_emb.vec/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
 sed "s/test-file/test.conllu.cipher/" \
