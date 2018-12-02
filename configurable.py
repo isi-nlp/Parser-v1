@@ -129,6 +129,10 @@ class Configurable(object):
   def save_dir(self):
     return self._config.get('OS', 'save_dir')
   argparser.add_argument('--save_dir')
+  @property
+  def zero_wrd_emb(self):
+    return self._config.getboolean('OS', 'zero_wrd_emb')
+  argparser.add_argument('--zero_wrd_emb')
   
   #=============================================================
   # [Dataset]
