@@ -37,7 +37,7 @@ class Parser(BaseParser):
     if self.add_to_pretrained:
       word_inputs += pret_inputs
 
-    if args.unk_pos:
+    if self.unk_pos:
       tag_inputs = tf.zeros_like(tag_inputs)
       
     if self.word_l2_reg > 0:

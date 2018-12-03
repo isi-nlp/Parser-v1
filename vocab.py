@@ -259,11 +259,15 @@ class Vocab(Configurable):
       if "." in self._str2idx:
         self.PUNCT = self._str2idx["."]
     
-    if self.use_pretrained:
+    if self.use_pretrained or self.name == 'Tags':
+      # print(">>>>>>------------------")
       initializer = tf.zeros_initializer
-      embed_size = self.pretrained_embeddings.shape[1]
     else:
       initializer = tf.random_normal_initializer()
+
+    if self.use_pretrained:
+      embed_size = self.pretrained_embeddings.shape[1]
+    else:
       embed_size = self.embed_size
     
     with tf.device('/cpu:0'):
