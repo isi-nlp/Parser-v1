@@ -36,6 +36,9 @@ class Parser(BaseParser):
 
     if self.add_to_pretrained:
       word_inputs += pret_inputs
+
+    if args.unk_pos:
+      tag_inputs = tf.zeros_like(tag_inputs)
       
     if self.word_l2_reg > 0:
       unk_mask = tf.expand_dims(tf.to_float(tf.greater(inputs[:,:,1], vocabs[0].UNK)),2)
