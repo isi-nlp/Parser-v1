@@ -87,14 +87,14 @@ class NN(Configurable):
       tag_embed_size = 0 if tag_inputs is None else tag_inputs.get_shape().as_list()[-1]
       rel_embed_size = 0 if rel_inputs is None else rel_inputs.get_shape().as_list()[-1]
       total_size = word_embed_size + clt_embed_size + tag_embed_size + rel_embed_size
-      if word_embed_size == tag_embed_size:
-        total_size += word_embed_size
+      # if word_embed_size == tag_embed_size:
+        # total_size += word_embed_size
       dropped_sizes = word_mask * word_embed_size + \
                       clt_mask * clt_embed_size + \
                       tag_mask * tag_embed_size + \
                       rel_mask * rel_embed_size
-      if word_embed_size == tag_embed_size:
-        dropped_sizes += word_mask * clt_mask * tag_mask * word_embed_size
+      # if word_embed_size == tag_embed_size:
+        # dropped_sizes += word_mask * clt_mask * tag_mask * word_embed_size
       scale_factor = total_size / (dropped_sizes + self.epsilon)
       
       word_inputs *= word_mask * scale_factor

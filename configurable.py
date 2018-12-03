@@ -133,6 +133,10 @@ class Configurable(object):
   def zero_wrd_emb(self):
     return self._config.getboolean('OS', 'zero_wrd_emb')
   argparser.add_argument('--zero_wrd_emb')
+  @property
+  def unk_pos(self):
+    return self._config.getboolean('OS', 'unk_pos')
+  argparser.add_argument('--unk_pos')
   
   #=============================================================
   # [Dataset]

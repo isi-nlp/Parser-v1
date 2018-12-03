@@ -101,6 +101,7 @@ class Dataset(Configurable):
     words, tags, rels, clts = self.vocabs
     wpt = 2 if words.use_pretrained else 1
     zero_we = self.zero_wrd_emb and self._name != "Trainset"
+    unk_pos = self.unk_pos and self._name != "Trainset"
     wunk_pack = (words.UNK,words.UNK) if words.use_pretrained else (words.UNK,)
 
     for i, sent in enumerate(buff):
@@ -111,13 +112,14 @@ class Dataset(Configurable):
                                     token[rels.conll_idx], \
                                     token[clts.conll_idx]
         wid = words[word] if not zero_we else wunk_pack
+        tid = tags[tag] if not unk_pos else (tags.UNK,)
         cid = ''
         if self.clt_src=="id":
           cid = clts[clt]
         else:
           cid = clts[clts.get_clt_map(word)] # emb_id of multi-ling clust id
         
-        buff[i][j] = (word,) + wid + tags[tag] + cid + (int(head),) + rels[rel]
+        buff[i][j] = (word,) + wid + tid + cid + (int(head),) + rels[rel]
 
         # if use_pretrained, words[] returns trainable_id, pretr_id
       sent.insert(0, ['root'] + [Vocab.ROOT]*(wpt+1+1)+ [0, Vocab.ROOT])
