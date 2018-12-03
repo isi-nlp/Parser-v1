@@ -33,8 +33,9 @@ import unicodedata
 #***************************************************************
 
 def test_punct(token):
+  token = unicode(token,errors="replace")
   for c in token:
-    if unicodedata.category(unicode(c))[0] != 'P':
+    if unicodedata.category(c)[0] != 'P':
       return False
   return True
 
