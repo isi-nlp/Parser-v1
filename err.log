@@ -8,22 +8,19 @@ RuntimeError: module compiled against API version 0xc but this version of numpy 
 RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
 RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
 RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
-name: GeForce GTX 1080 Ti
-major: 6 minor: 1 memoryClockRate (GHz) 1.582
-pciBusID 0000:84:00.0
-Total memory: 10.92GiB
-Free memory: 10.76GiB
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 
-I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:839] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:84:00.0)
 Traceback (most recent call last):
-  File "network.py", line 419, in <module>
-    saver.restore(sess, tf.train.latest_checkpoint(network.save_dir, latest_filename=network.name.lower()))
-  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/training/saver.py", line 1126, in restore
-    if not file_io.get_matching_files(save_path):
-  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/lib/io/file_io.py", line 52, in get_matching_files
-    return pywrap_tensorflow.GetMatchingFiles(compat.as_bytes(filename), status)
-  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/util/compat.py", line 45, in as_bytes
-    (bytes_or_text,))
-TypeError: Expected binary or unicode string, got None
+  File "network.py", line 381, in <module>
+    network = Network(model, **cargs)
+  File "network.py", line 82, in __init__
+    self._validset = Dataset(self.valid_file, self._vocabs, model, self._config, name='Validset')
+  File "/disk/ocean/rcardenas/dep-par-biaffine/dataset.py", line 55, in __init__
+    self.rebucket()
+  File "/disk/ocean/rcardenas/dep-par-biaffine/dataset.py", line 159, in rebucket
+    buff = self._file_iterator.next()
+  File "/disk/ocean/rcardenas/dep-par-biaffine/dataset.py", line 102, in file_iterator
+    buff = self._process_buff(buff)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/dataset.py", line 126, in _process_buff
+    tid = (tags.PUNCT,) if test_punct(word[:-3]) else (tags.UNK,) # assumes token is <word>_<langid>
+  File "/disk/ocean/rcardenas/dep-par-biaffine/dataset.py", line 37, in test_punct
+    if unicodedata.category(unicode(c))[0] != 'P':
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 0: ordinal not in range(128)
