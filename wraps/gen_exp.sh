@@ -1,14 +1,26 @@
 #!/bin/bash
 
+set -e
+
 il=$1
 clt_opt=$2
 zwe_opt=$3 # True,False
+noise_opt=$4 # not-noisy, noisy
 
 use_we="guo"
+
 if [ $zwe_opt = "True" ]; then
 	use_we="unk"
 fi
-outfile="$il".$use_we.$clt_opt.sh
+
+outfile="$il".$use_we.$clt_opt.$noise_opt.sh
+exp_id="$il-$use_we-$clt_opt-$noise_opt"
+
+if [ $noise_opt = "not-noisy" ]; then
+	noise_opt=""
+else
+	noise_opt=".$noise_opt"
+fi
 
 echo "#!/bin/bash" > $outfile
 echo "#SBATCH --ntasks=40" >> $outfile
@@ -23,7 +35,6 @@ echo "source /home/rcf-40/rac_815/.bash_profile" >> $outfile
 echo "" >> $outfile
 
 
-exp_id="$il-$use_we-$clt_opt"
 
 echo "exp_id=$exp_id" >> $outfile
 echo "" >> $outfile
@@ -33,6 +44,9 @@ test_orig="test.lc.lid"
 # malopa original
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
+sed "s/-train-noise-opt/$noise_opt/" | \
+sed "s/-dev-noise-opt/$noise_opt/" | \
+sed "s/-test-noise-opt/$noise_opt/" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
@@ -42,6 +56,9 @@ sed "s/test-file/$test_orig/" \
 # malopa - cipher
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
+sed "s/-train-noise-opt/$noise_opt/" | \
+sed "s/-dev-noise-opt/$noise_opt/" | \
+sed "s/-test-noise-opt//" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
