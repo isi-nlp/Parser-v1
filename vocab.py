@@ -259,7 +259,7 @@ class Vocab(Configurable):
       if "." in self._str2idx:
         self.PUNCT = self._str2idx["."]
     
-    if self.use_pretrained or self.name == 'Tags':
+    if self.use_pretrained or self.zero_test_pos:
       # print(">>>>>>------------------")
       initializer = tf.zeros_initializer
     else:

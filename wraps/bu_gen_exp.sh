@@ -5,22 +5,24 @@ set -e
 il=$1
 clt_opt=$2
 zwe_opt=$3 # True,False
-unk_pos_opt=$4 # True False
+noise_opt=$4 # not-noisy, noisy
 
 use_we="guo"
-tr_pos="gdpos"
 
 if [ $zwe_opt = "True" ]; then
 	use_we="unk"
 fi
 
-if [ $unk_pos_opt = "False" ]; then
-	tr_pos="unkpos"
+exp_id=""
+if [ $noise_opt = "noisy" ]; then
+	exp_id="$il-$use_we-$clt_opt-$noise_opt"
+	noise_opt=".$noise_opt"
+else
+	noise_opt=""
+	exp_id="$il-$use_we-$clt_opt"
 fi
 
-exp_id="$il-$use_we-$clt_opt-$tr_pos"
-
-outfile="$il".$use_we.$clt_opt.sh
+outfile="$il".$use_we.$clt_opt$noise_opt.sh
 
 
 echo "#!/bin/bash" > $outfile
@@ -45,20 +47,24 @@ test_orig="test.lc.lid"
 # malopa original
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
+sed "s/-train-noise-opt/$noise_opt/" | \
+sed "s/-dev-noise-opt/$noise_opt/" | \
+sed "s/-test-noise-opt/$noise_opt/" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
-sed "s/unk-pos-opt/$unk_pos_opt/" | \
 sed "s/test-file/$test_orig/" \
 > ../config/$exp_id.cfg
 
 # malopa - cipher
 cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
+sed "s/-train-noise-opt/$noise_opt/" | \
+sed "s/-dev-noise-opt/$noise_opt/" | \
+sed "s/-test-noise-opt//" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
 sed "s/zwe-opt/$zwe_opt/" | \
-sed "s/unk-pos-opt/$unk_pos_opt/" | \
 sed "s/test-file/test.conllu.cipher/" \
 > ../config/$exp_id.cipher.cfg
 
