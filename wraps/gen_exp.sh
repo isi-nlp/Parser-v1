@@ -8,14 +8,14 @@ zwe_opt=$3 # True,False
 unk_pos_opt=$4 # True False
 
 use_we="guo"
-tr_pos="gdpos"
+tr_pos="unkpos"
 
 if [ $zwe_opt = "True" ]; then
 	use_we="unk"
 fi
 
 if [ $unk_pos_opt = "False" ]; then
-	tr_pos="unkpos"
+	tr_pos="gdpos"
 fi
 
 exp_id="$il-$use_we-$clt_opt-$tr_pos"
