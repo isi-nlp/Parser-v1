@@ -264,11 +264,12 @@ class Network(Configurable):
             str(pred[7]) if pred[7] != -1 else '_',
             self.rels[pred[8]] if pred[8] != -1 else '_',
           )
-          f.write('%s\t%s\t_\t%s\t_\t_\t%s\t%s\t%s\t%s\n' % tup)
+          f.write('%s\t%s\t_\t%s\t_\t_\t%s\t%s\t%s\t%s\n' % tup)          
         f.write('\n')
     with open(os.path.join(self.save_dir, 'scores.txt'), 'a') as f:
       s, _ = self.model.evaluate(os.path.join(self.save_dir, os.path.basename(filename)), punct=self.model.PUNCT)
       f.write(s)
+      print(s)
     return
   
   #=============================================================
