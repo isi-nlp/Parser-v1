@@ -124,7 +124,7 @@ class Dataset(Configurable):
         wid = words[word] if not zero_we else wunk_pack
         tid = tags[tag]
         if unk_pos:
-          tid = (tags.PUNCT,) if test_punct(word[:-3]) else (tags.UNK,) # assumes token is <word>_<langid>
+          tid = (tags.PUNCT,) if test_punct(word[:-3]) else (tags.PAD,) # assumes token is <word>_<langid>
 
         cid = ''
         if self.clt_src=="id":
