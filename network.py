@@ -83,6 +83,8 @@ class Network(Configurable):
     print("test data..")
     self._testset = Dataset(self.test_file, self._vocabs, model, self._config, name='Testset')
     
+    pdb.set_trace()
+
     self._ops = self._gen_ops()
     self._save_vars = filter(lambda x: u'Pretrained' not in x.name, tf.all_variables())
     self.history = {
