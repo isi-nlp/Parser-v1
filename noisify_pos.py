@@ -77,21 +77,42 @@ if __name__ == "__main__":
   p_wgts = map(lambda x: pos_counts[x]*1.0/total, tagset_no_punct)
   p_wgts = list(p_wgts)
 
+  sent_cols = []
   for line in open(args.input,'r'):
     line = line.strip("\n")
     if line == "":
-      print()
-      continue
-    cols = line.split("\t")
-    pos = cols[3]
-    deprel = cols[7]
-    if pos!=punct_pos and deprel not in deprels_to_keep:
-      new_pos = np.random.choice(tagset_no_punct,1,p=p_wgts)[0]
-      cols[3] = new_pos
+      n = len(sent_cols)
+      to_replace = np.ones(n,dtype=bool)
+      sampled = np.random.choice(tagset_no_punct,size=n,p=p_wgts)
 
+      for i,cols in enumerate(sent_cols):
+        pos = cols[3]
+        head = int(cols[6])
+        deprel = cols[7]
+        if pos==punct_pos or deprel in deprels_to_keep:
+          to_replace[i] = False
+          if head>0:
+            to_replace[head-1] = False
+        #
+      #
+      # for i,cols in enumerate(sent_cols):
+      #   npos = sampled[i] if to_replace[i] else cols[3]
+      #   print("%2s - %5s - %5s - %7s - %2s - %d" % (cols[0], cols[3], npos, cols[7], cols[6], to_replace[i]))
+
+      # pdb.set_trace()
+
+      for i,cols in enumerate(sent_cols):
+        cols[3] = sampled[i] if to_replace[i] else cols[3]
+        print("\t".join(cols))
+      #
+      sent_cols = []
+      print()
+    else:
+      sent_cols.append(line.split("\t"))
+      
       # rnd_pid = np.random.randint(0,len(tagset)-1,1)[0]  # exclude PUNCT from the sample pool
       # cols[3] = tagset[rnd_pid]
     #
-    print("\t".join(cols))
+    
     # print("%30s | %5s | %5s | %10s" % (cols[1],pos,cols[3],deprel) )
   #
