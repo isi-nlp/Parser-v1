@@ -14,7 +14,7 @@ if [ $zwe_opt = "True" ]; then
 fi
 
 exp_id=""
-if [ $noise_opt == "noisy" ]; then
+if [ $noise_opt = "noisy" ]; then
 	exp_id="$il-$use_we-$clt_opt-$noise_opt"
 	noise_opt=".$noise_opt"
 else

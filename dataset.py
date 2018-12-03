@@ -28,6 +28,15 @@ from lib.etc.k_means import KMeans
 from configurable import Configurable
 from vocab import Vocab
 from metabucket import Metabucket
+import unicodedata
+
+#***************************************************************
+
+def test_punct(token):
+  for c in token:
+    if unicodedata.category(unicode(c))[0] != 'P':
+      return False
+  return True
 
 #***************************************************************
 class Dataset(Configurable):
@@ -112,7 +121,10 @@ class Dataset(Configurable):
                                     token[rels.conll_idx], \
                                     token[clts.conll_idx]
         wid = words[word] if not zero_we else wunk_pack
-        tid = tags[tag] if not unk_pos else (tags.UNK,)
+        tid = tags[tag]
+        if unk_pos:
+          tid = (tags.PUNCT,) if test_punct(word[:-3]) else (tags.UNK,) # assumes token is <word>_<langid>
+
         cid = ''
         if self.clt_src=="id":
           cid = clts[clt]

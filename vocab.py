@@ -46,7 +46,8 @@ class Vocab(Configurable):
   SPECIAL_TOKENS = ('<PAD>', '<ROOT>', '<UNK>')
   START_IDX = len(SPECIAL_TOKENS)
   PAD, ROOT, UNK = range(START_IDX)
-  
+  PUNCT = -1
+
   #=============================================================
   def __init__(self, vocab_file, conll_idx, *args, **kwargs):
     """"""
@@ -67,7 +68,9 @@ class Vocab(Configurable):
       self.SPECIAL_TOKENS = ('pad', self.root_label, 'unk')
     elif self.name == 'Clusters':
       self.SPECIAL_TOKENS = ('C.PAD', 'C.ROOT', 'C.UNK')
-    
+      
+    self.PUNCT = -1
+
     self._counts = Counter()
     self._str2idx = {}
     self._idx2str = {}
@@ -250,6 +253,11 @@ class Vocab(Configurable):
   #=============================================================
   def _finalize(self):
     """"""
+    if self.name == 'Tags':
+      if "PUNCT" in self._str2idx:
+        self.PUNCT = self._str2idx["PUNCT"]
+      if "." in self._str2idx:
+        self.PUNCT = self._str2idx["."]
     
     if self.use_pretrained:
       initializer = tf.zeros_initializer
