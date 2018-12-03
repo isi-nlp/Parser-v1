@@ -13,14 +13,17 @@ if [ $zwe_opt = "True" ]; then
 	use_we="unk"
 fi
 
-outfile="$il".$use_we.$clt_opt.$noise_opt.sh
-exp_id="$il-$use_we-$clt_opt-$noise_opt"
-
-if [ $noise_opt = "not-noisy" ]; then
-	noise_opt=""
-else
+exp_id=""
+if [ $noise_opt == "noisy" ]; then
+	exp_id="$il-$use_we-$clt_opt-$noise_opt"
 	noise_opt=".$noise_opt"
+else
+	noise_opt=""
+	exp_id="$il-$use_we-$clt_opt"
 fi
+
+outfile="$il".$use_we.$clt_opt$noise_opt.sh
+
 
 echo "#!/bin/bash" > $outfile
 echo "#SBATCH --ntasks=40" >> $outfile
