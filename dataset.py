@@ -111,7 +111,8 @@ class Dataset(Configurable):
     words, tags, rels, clts = self.vocabs
     wpt = 2 if words.use_pretrained else 1
     zero_we = self.zero_wrd_emb and self._name != "Trainset"
-    unk_pos = self.unk_pos and self._name != "Trainset"
+    unk_pos = any([self.zero_test_pos and self._name != "Trainset",
+                   self.unk_train_pos and self._name == "Trainset"])
     wunk_pack = (words.UNK,words.UNK) if words.use_pretrained else (words.UNK,)
 
     for i, sent in enumerate(buff):

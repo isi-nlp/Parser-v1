@@ -134,9 +134,13 @@ class Configurable(object):
     return self._config.getboolean('OS', 'zero_wrd_emb')
   argparser.add_argument('--zero_wrd_emb')
   @property
-  def unk_pos(self):
-    return self._config.getboolean('OS', 'unk_pos')
-  argparser.add_argument('--unk_pos')
+  def zero_test_pos(self):
+    return self._config.getboolean('OS', 'zero_test_pos')
+  argparser.add_argument('--zero_test_pos')
+  @property
+  def unk_train_pos(self):
+    return self._config.getboolean('OS', 'unk_train_pos')
+  argparser.add_argument('--unk_train_pos')
   
   #=============================================================
   # [Dataset]
