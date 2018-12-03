@@ -1,0 +1,84 @@
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcublas.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcudnn.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcufft.so locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:108] successfully opened CUDA library libcurand.so locally
+RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
+RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
+RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
+RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
+RuntimeError: module compiled against API version 0xc but this version of numpy is 0xb
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
+name: GeForce GTX 1080 Ti
+major: 6 minor: 1 memoryClockRate (GHz) 1.582
+pciBusID 0000:84:00.0
+Total memory: 10.92GiB
+Free memory: 10.76GiB
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 
+I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y 
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:839] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:84:00.0)
+E tensorflow/stream_executor/cuda/cuda_blas.cc:367] failed to create cublas handle: CUBLAS_STATUS_NOT_INITIALIZED
+W tensorflow/stream_executor/stream.cc:1334] attempting to perform BLAS operation using StreamExecutor without BLAS support
+E tensorflow/core/client/tensor_c_api.cc:485] Blas SGEMM launch failed : a.shape=(155, 520), b.shape=(520, 1600), m=155, n=1600, k=520
+	 [[Node: RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/MatMul = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false, _device="/job:localhost/replica:0/task:0/gpu:0"](RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/concat, RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/MatMul/Enter)]]
+	 [[Node: RNN1_1/BiRNN_FW/BiRNN_FW/All/_236 = _Recv[client_terminated=false, recv_device="/job:localhost/replica:0/task:0/cpu:0", send_device="/job:localhost/replica:0/task:0/gpu:0", send_device_incarnation=1, tensor_name="edge_824_RNN1_1/BiRNN_FW/BiRNN_FW/All", tensor_type=DT_BOOL, _device="/job:localhost/replica:0/task:0/cpu:0"]()]]
+Traceback (most recent call last):
+  File "network.py", line 419, in <module>
+    network.test(sess, validate=True)
+  File "network.py", line 244, in test
+    mb_probs = sess.run(op, feed_dict=feed_dict)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/client/session.py", line 382, in run
+    run_metadata_ptr)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/client/session.py", line 655, in _run
+    feed_dict_string, options, run_metadata)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/client/session.py", line 723, in _do_run
+    target_list, options, run_metadata)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/client/session.py", line 743, in _do_call
+    raise type(e)(node_def, op, message)
+tensorflow.python.framework.errors.InternalError: Blas SGEMM launch failed : a.shape=(155, 520), b.shape=(520, 1600), m=155, n=1600, k=520
+	 [[Node: RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/MatMul = MatMul[T=DT_FLOAT, transpose_a=false, transpose_b=false, _device="/job:localhost/replica:0/task:0/gpu:0"](RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/concat, RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/MatMul/Enter)]]
+	 [[Node: RNN1_1/BiRNN_FW/BiRNN_FW/All/_236 = _Recv[client_terminated=false, recv_device="/job:localhost/replica:0/task:0/cpu:0", send_device="/job:localhost/replica:0/task:0/gpu:0", send_device_incarnation=1, tensor_name="edge_824_RNN1_1/BiRNN_FW/BiRNN_FW/All", tensor_type=DT_BOOL, _device="/job:localhost/replica:0/task:0/cpu:0"]()]]
+Caused by op u'RNN0_1/BiRNN_FW/BiRNN_FW/while/LSTMCell/Linear/MatMul', defined at:
+  File "network.py", line 380, in <module>
+    network = Network(model, **cargs)
+  File "network.py", line 86, in __init__
+    self._ops = self._gen_ops()
+  File "network.py", line 314, in _gen_ops
+    valid_output = self._model(self._validset, moving_params=optimizer)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/parsers/parser.py", line 48, in __call__
+    top_recur, _ = self.RNN(top_recur)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/nn.py", line 135, in RNN
+    dtype=tf.float32)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 422, in dynamic_bidirectional_rnn
+    output_fw, output_state_fw = dynamic_rnn(cell_fw, inputs, sequence_length, initial_state_fw, ff_keep_prob, recur_keep_prob, dtype, parallel_iterations, swap_memory, time_major, scope=fw_scope)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 546, in dynamic_rnn
+    swap_memory=swap_memory, sequence_length=sequence_length)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 665, in _dynamic_rnn_loop
+    swap_memory=swap_memory)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/ops/control_flow_ops.py", line 1973, in while_loop
+    result = context.BuildLoop(cond, body, loop_vars)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/ops/control_flow_ops.py", line 1860, in BuildLoop
+    pred, body, original_loop_vars, loop_vars)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/ops/control_flow_ops.py", line 1810, in _BuildLoop
+    body_result = body(*packed_vars_for_body)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 652, in _time_step
+    skip_conditionals=True)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 255, in _rnn_step
+    new_output, new_state = call_cell()
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/models/rnn.py", line 641, in <lambda>
+    call_cell = lambda: cell(input_t, state*state_dropout)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/rnn_cells/lstm_cell.py", line 46, in __call__
+    moving_params=self.moving_params)
+  File "/disk/ocean/rcardenas/dep-par-biaffine/lib/linalg.py", line 107, in linear
+    new = tf.matmul(concatenation, matrix) + bias
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/ops/math_ops.py", line 1346, in matmul
+    name=name)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/ops/gen_math_ops.py", line 1271, in _mat_mul
+    transpose_b=transpose_b, name=name)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/framework/op_def_library.py", line 703, in apply_op
+    op_def=op_def)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/framework/ops.py", line 2310, in create_op
+    original_op=self._default_original_op, op_def=op_def)
+  File "/disk/ocean/snarayan/tools/tensorflow-gpu/lib/python2.7/site-packages/tensorflow/python/framework/ops.py", line 1232, in __init__
+    self._traceback = _extract_stack()
+
