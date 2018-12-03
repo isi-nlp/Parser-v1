@@ -3,7 +3,7 @@
 set -e
 
 il=$1
-clt_opt=$2
+clt_opt=$2 # id, emb
 zwe_opt=$3 # True,False
 unk_pos_opt=$4 # True False
 
@@ -20,7 +20,7 @@ fi
 
 exp_id="$il-$use_we-$clt_opt-$tr_pos"
 
-outfile="$il".$use_we.$clt_opt.sh
+outfile="$il".$use_we.$clt_opt.$tr_pos.sh
 
 
 echo "#!/bin/bash" > $outfile
