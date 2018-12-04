@@ -11,11 +11,11 @@ RuntimeError: module compiled against API version 0xc but this version of numpy 
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:102] Found device 0 with properties: 
 name: GeForce GTX 1080 Ti
 major: 6 minor: 1 memoryClockRate (GHz) 1.582
-pciBusID 0000:83:00.0
+pciBusID 0000:84:00.0
 Total memory: 10.92GiB
 Free memory: 10.76GiB
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:126] DMA: 0 
 I tensorflow/core/common_runtime/gpu/gpu_init.cc:136] 0:   Y 
-I tensorflow/core/common_runtime/gpu/gpu_device.cc:839] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:83:00.0)
-I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 7550 get requests, put_count=7497 evicted_count=1000 eviction_rate=0.133387 and unsatisfied allocation rate=0.152715
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:839] Creating TensorFlow device (/gpu:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:84:00.0)
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:244] PoolAllocator: After 10872 get requests, put_count=10835 evicted_count=1000 eviction_rate=0.0922935 and unsatisfied allocation rate=0.104581
 I tensorflow/core/common_runtime/gpu/pool_allocator.cc:256] Raising pool_size_limit_ from 100 to 110
