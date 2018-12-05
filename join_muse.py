@@ -16,8 +16,9 @@ for lang in "de en fr es it pt sv".split():
 		if line=="": continue
 		cols = line.split()
 		if len(cols)<3: continue
-		w = cols[0] + "_"+lang
+		w = cols[0] + "_" + lang
 		if w in vocab:
-			print(line)
+			cols[0] = w
+			print(" ".join(cols))
 	#
 #
