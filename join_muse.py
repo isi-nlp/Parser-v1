@@ -14,7 +14,9 @@ for lang in "de en fr es it pt sv".split():
 	for line in open(emb_file,'r'):
 		line = line.strip("\n")
 		if line=="": continue
-		w = line.split()[0] + "_"+lang
+		cols = line.split()
+		if len(cols)<3: continue
+		w = cols[0] + "_"+lang
 		if w in vocab:
 			print(line)
 	#
