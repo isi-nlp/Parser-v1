@@ -9,10 +9,12 @@ vocab = set(vocab)
 
 
 for lang in "de en fr es it pt sv".split():
-	for line in open("wrd-emb/wiki.multi.%s.vec" % lang,'r'):
+	emb_file = "wrd-emb/%s-en/%s-en/vectors-%s.txt" % (lang,lang,lang) if lang!="en" else \
+						 "wrd-emb/cc.en.300.vec"
+	for line in open(emb_file,'r'):
 		line = line.strip("\n")
 		if line=="": continue
-		w = line.split()[0]
+		w = line.split()[0] + "_"+lang
 		if w in vocab:
 			print(line)
 	#
