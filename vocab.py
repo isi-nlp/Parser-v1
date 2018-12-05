@@ -260,7 +260,6 @@ class Vocab(Configurable):
         self.PUNCT = self._str2idx["."]
     
     if self.use_pretrained or self.zero_test_pos:
-      # print(">>>>>>------------------")
       initializer = tf.zeros_initializer
     else:
       initializer = tf.random_normal_initializer()
