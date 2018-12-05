@@ -3,23 +3,24 @@
 set -e
 
 il=$1
-use_we=$2  # guo, muse
-clt_opt=$3 # id, emb
-tr_pos=$4  # gold, unk
+clt_opt=$2 # id, emb
+zwe_opt=$3 # True,False
+unk_pos_opt=$4 # True False
+
+use_we="guo"
+tr_pos="unkpos"
+
+if [ $zwe_opt = "True" ]; then
+	use_we="unk"
+fi
+
+if [ $unk_pos_opt = "False" ]; then
+	tr_pos="gdpos"
+fi
 
 exp_id="$il-$use_we-$clt_opt-$tr_pos"
+
 outfile="$il".$use_we.$clt_opt.$tr_pos.sh
-
-
-unk_pos_opt="False"
-
-if [ $tr_pos = "unk" ]; then
-	unk_pos_opt="True"
-fi
-
-if [ $use_we = "muse" ]; then
-	use_we="wiki.multi.$il"
-fi
 
 
 echo "#!/bin/bash" > $outfile
@@ -46,7 +47,7 @@ cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
-sed "s/we-opt/$use_we/" | \
+sed "s/zwe-opt/$zwe_opt/" | \
 sed "s/unk-pos-opt/$unk_pos_opt/" | \
 sed "s/test-file/$test_orig/" \
 > ../config/$exp_id.cfg
@@ -56,7 +57,7 @@ cat ../config/tmp.baseline.cfg | \
 sed "s/il-id/$il/" | \
 sed "s/exp-dir/$exp_id/" | \
 sed "s/clt-opt/$clt_opt/" | \
-sed "s/we-opt/$use_we/" | \
+sed "s/zwe-opt/$zwe_opt/" | \
 sed "s/unk-pos-opt/$unk_pos_opt/" | \
 sed "s/test-file/test.conllu.cipher/" \
 > ../config/$exp_id.cipher.cfg
